@@ -76,7 +76,7 @@ def aggregate(line_generator,get_time_bucket,config_kwargs,keep_empty_entries):
             measurement.add_tweet(tweet)
 
     if not keep_empty_entries:
-        for dt_key,instance_list in data.items():
+        for dt_key,instance_list in list(data.items()):
             for instance in instance_list:
                 if instance.get() == 0:
                     data[dt_key].remove(instance)
@@ -93,7 +93,7 @@ def combine(data):
     """
     reduced_data = {}
     for chunk_data in data:
-        for time_bucket_key,measurements in chunk_data.items():
+        for time_bucket_key,measurements in list(chunk_data.items()):
             for measurement in measurements:
                 if time_bucket_key not in reduced_data:
                     reduced_data[time_bucket_key] = [measurement]
@@ -253,12 +253,12 @@ if __name__ == "__main__":
 
     ## output the data in CSV
     output_list = []
-    for time_bucket_key,measurements in combined_data.items():
+    for time_bucket_key,measurements in list(combined_data.items()):
         # the format of this string must be parsable by dateutil.parser.parse
         time_bucket_start = datetime.datetime.strptime(time_bucket_key,dt_format).strftime('%Y%m%d%H%M%S')
         for measurement in measurements:
             for count,counter_name in measurement.get():
-                csv_string = u'{0:d},{1},{2},{3:s}'.format(int(time_bucket_start),
+                csv_string = '{0:d},{1},{2},{3:s}'.format(int(time_bucket_start),
                         time_bucket_size_in_sec,
                         count,
                         counter_name
